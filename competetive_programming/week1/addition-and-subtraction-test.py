@@ -4,54 +4,51 @@ import subprocess
 TESTNBR = 0
 
 
+def write_input():
+    """Write input to smaple.in"""
+    pass
+
+
+def execute(argument):
+    """Execute a shell command"""
+    proc = subprocess.Popen(argument, shell=True, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    proc.wait()
+    return proc
+
+
+def get_output(proc):
+    output = ''
+    for line in iter(proc.stdout.readline, ''):
+        if not line:
+            break
+        output += line.rstrip().decode('utf-8')
+    return output
+
+
 def testUnit(x, y, z):
     global TESTNBR
     TESTNBR += 1
     d = {'x': x, 'y': y, 'z': z}
-    # solution
 
-    # Command with shell expansion
-    subprocess.call('echo ' + str(x) + " " + str(y) + " " +
-                    str(z) + " > sample.in", shell=True)
+    execute(f'echo {x} {y} {z} > sample.in')
+    subject = execute('./addition-and-subtraction < sample.in')
+    trivial = execute('python3 addition-and-subtraction.py < sample.in')
 
-    subject = subprocess.Popen('./addition-and-subtraction < sample.in', shell=True, stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
-    subject.wait()
+    subject_out = get_output(subject)
+    trivial_out = get_output(trivial)
 
-    # trivial
-    trivial = subprocess.Popen('python3 addition-and-subtraction.py < sample.in', shell=True, stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
-    trivial.wait()
-
-    #subprocess.call('python3 addition-and-subtraction.py < sample.in > out2', shell=True)
-    subprocess.call(
-        'diff out out2 > /dev/null', shell=True)
-    # Check ans
-    res = subprocess.Popen('diff out out1', shell=True, stdin=subprocess.PIPE,
-                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
-
-    res.wait()
-    if res.wait() == 0:
-        return res.returncode
-    elif res.returncode == 1:
-        print(' - ERROR - on test ', TESTNBR, ': ', d)
-
-        print("---- Subject OUTPUT ----")
-        for line in iter(subject.stdout.readline, ''):
-            if not line:
-                break
-            print(line.rstrip().decode('utf-8'))
-
-        print("---- Trivial OUTPUT ----")
-        for line in iter(trivial.stdout.readline, ''):
-            if not line:
-                break
-            print(line.rstrip().decode('utf-8'))
+    if subject_out == trivial_out:
+        return 0
     else:
-        print(' - ERROR - on test ', TESTNBR, '<CMD ERROR>: ',
-              res.returncode, res, res.stdout)
+        print('############### ERROR on test: ', TESTNBR, ' ###############')
+        print('---- INPUT: ', d)
+        print("---- Subject OUTPUT: ")
+        print(subject_out)
+        print("---- Correct OUTPUT: ")
+        print(trivial_out)
 
-    return res.returncode
+    return 1
 
 
 class LurrencyTest(TestCase):
