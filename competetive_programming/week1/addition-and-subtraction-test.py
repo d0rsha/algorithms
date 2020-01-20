@@ -5,9 +5,12 @@ import random
 TESTNBR = 0
 
 
-def write_input():
+def write_sample_file(oneliner):
     """Write input to smaple.in"""
-    pass
+    with open("sample.-in", 'w') as f:
+        f.write(oneliner)
+        f.write('\n')
+        f.close()
 
 
 def execute(argument):
@@ -39,7 +42,8 @@ def testUnit(x, y, z):
     dictionary = {'x': x, 'y': y, 'z': z}
     print(f"Test{TESTNBR}: {dictionary}")
 
-    execute(f'echo {x} {y} {z} > sample.in')
+    #execute(f'echo {x} {y} {z} > sample.in')
+    write_sample_file(f'echo {x} {y} {z}')
     subject = execute('./addition-and-subtraction < sample.in')
     trivial = execute('python3 addition-and-subtraction.py < sample.in')
 
