@@ -14,12 +14,16 @@ def testUnit(x, y, z):
     subprocess.call('echo ' + str(x) + " " + str(y) + " " +
                     str(z) + " > sample.in", shell=True)
 
-    # ./addition-and-subtraction < sample.in > out
-    subprocess.call(
-        './addition-and-subtraction < sample.in > out1', shell=True)
+    subject = subprocess.Popen('./addition-and-subtraction < sample.in', shell=True, stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    subject.wait()
+
     # trivial
-    subprocess.call(
-        'python3 addition-and-subtraction.py < sample.in > out2', shell=True)
+    trivial = subprocess.Popen('python3 addition-and-subtraction.py < sample.in', shell=True, stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    trivial.wait()
+
+    #subprocess.call('python3 addition-and-subtraction.py < sample.in > out2', shell=True)
     subprocess.call(
         'diff out out2 > /dev/null', shell=True)
     # Check ans
@@ -31,6 +35,18 @@ def testUnit(x, y, z):
         return res.returncode
     elif res.returncode == 1:
         print(' - ERROR - on test ', TESTNBR, ': ', d)
+
+        print("---- Subject OUTPUT ----")
+        for line in iter(subject.stdout.readline, ''):
+            if not line:
+                break
+            print(line.rstrip().decode('utf-8'))
+
+        print("---- Trivial OUTPUT ----")
+        for line in iter(trivial.stdout.readline, ''):
+            if not line:
+                break
+            print(line.rstrip().decode('utf-8'))
     else:
         print(' - ERROR - on test ', TESTNBR, '<CMD ERROR>: ',
               res.returncode, res, res.stdout)
