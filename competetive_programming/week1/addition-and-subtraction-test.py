@@ -7,7 +7,7 @@ TESTNBR = 0
 
 def write_sample_file(oneliner):
     """Write input to smaple.in"""
-    with open("sample.-in", 'w') as f:
+    with open("sample.in", 'w') as f:
         f.write(oneliner)
         f.write('\n')
         f.close()
@@ -43,7 +43,7 @@ def testUnit(x, y, z):
     print(f"Test{TESTNBR}: {dictionary}")
 
     #execute(f'echo {x} {y} {z} > sample.in')
-    write_sample_file(f'echo {x} {y} {z}')
+    write_sample_file(f'{x} {y} {z}')
     subject = execute('./addition-and-subtraction < sample.in')
     trivial = execute('python3 addition-and-subtraction.py < sample.in')
 
