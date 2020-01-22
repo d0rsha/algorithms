@@ -3,7 +3,7 @@
 # Author: Anders Vrethem
 # - Erasing Maxium
 # [Input ] The first line contains an integer n (2 ≤ n ≤ 100), the length of the array. The second line contains integers A[1], A[2], . . . , A[n] (1 ≤ A[i] ≤ 100, 1 ≤ i ≤ n).
-# [Output] Output n − 1 integers separated by spaces.
+# [Output] Output the same array without its maximum element, e.g. n − 1 integers separated by spaces.  If there are several maximum elements, remove the third.
 #
 # [SOLUTION]
 # Time Complexity: O(n)
