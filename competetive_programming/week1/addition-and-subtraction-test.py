@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from unittest import TestCase
-import subprocess
 import random
+import subprocess
+from unittest import TestCase
+
 TESTNBR = 0
 
 
@@ -40,7 +41,7 @@ def testUnit(x, y, z):
     global TESTNBR
     TESTNBR += 1
     dictionary = {'x': x, 'y': y, 'z': z}
-    print(f"Test{TESTNBR}: {dictionary}")
+    print(f'Test{TESTNBR}: {dictionary}')
 
     #execute(f'echo {x} {y} {z} > sample.in')
     write_sample_file(f'{x} {y} {z}')
